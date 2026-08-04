@@ -1,6 +1,6 @@
 # Automobiles
 
-Automobiles is a full-stack web app for New Purnagiri Automobiles. It includes a responsive customer website, authentication, service booking, customer testimonials, parts catalog, and an admin dashboard for managing bookings, services, parts, users, reviews, and contact messages.
+Automobiles is a full-stack web application for managing automotive services. It includes a responsive customer website, authentication, service booking, customer testimonials, a parts catalog, and an admin dashboard for managing bookings, services, parts, users, reviews, and contact messages.
 
 ## Tech Stack
 
@@ -8,8 +8,8 @@ Automobiles is a full-stack web app for New Purnagiri Automobiles. It includes a
 - Tailwind CSS
 - Express
 - MongoDB + Mongoose
-- JWT authentication
-- Clerk authentication support
+- JWT Authentication
+- Clerk Authentication
 
 ## Project Structure
 
@@ -51,10 +51,9 @@ cd client
 npm run dev
 ```
 
-## Checks
+## Build
 
 ```bash
 cd client
 npm run build
-npm run lint
 ```
