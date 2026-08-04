@@ -1,0 +1,51 @@
+module.exports = [
+  {
+    name: 'Engine Repair',
+    category: 'Repair',
+    description: 'Diagnostics and repair for engine performance, leaks, overheating, and warning lights.',
+    price: 2500,
+    active: true,
+  },
+  {
+    name: 'Brake Service',
+    category: 'Repair',
+    description: 'Brake pad, disc, fluid, and complete brake safety inspection service.',
+    price: 1800,
+    active: true,
+  },
+  {
+    name: 'Suspension Service',
+    category: 'Repair',
+    description: 'Inspection and repair for shocks, struts, steering, and ride comfort issues.',
+    price: 2200,
+    active: true,
+  },
+  {
+    name: 'Oil Change',
+    category: 'Maintenance',
+    description: 'Engine oil and filter replacement using recommended grade oil.',
+    price: 1200,
+    active: true,
+  },
+  {
+    name: 'Battery Replacement',
+    category: 'Maintenance',
+    description: 'Battery health check, terminal cleaning, and replacement support.',
+    price: 1500,
+    active: true,
+  },
+  {
+    name: 'General Checkup',
+    category: 'Maintenance',
+    description: 'Complete vehicle inspection before long trips or scheduled maintenance.',
+    price: 1000,
+    active: true,
+  },
+  {
+    name: 'AC Repair',
+    category: 'Additional',
+    description: 'Air-conditioning diagnostics, leak checks, and cooling system repair.',
+    price: 2000,
+    active: true,
+  },
+];
