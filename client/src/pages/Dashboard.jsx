@@ -17,6 +17,7 @@ export default function Dashboard() {
   const { user, token, logout, authMethod } = useAuth();
   const isAdmin = String(user?.role || '').toLowerCase() === 'admin';
   const [bookings, setBookings] = useState([]);
+  const [partsOrders, setPartsOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -27,10 +28,18 @@ export default function Dashboard() {
       try {
         setLoading(true);
         setError('');
-        const data = await apiRequest('/api/bookings/me', { token });
-        if (active) setBookings(Array.isArray(data) ? data : []);
+        const [bookingsResult, ordersResult] = await Promise.allSettled([
+          apiRequest('/api/bookings/me', { token }),
+          apiRequest('/api/parts-orders/me', { token }),
+        ]);
+        if (active) {
+          setBookings(bookingsResult.status === 'fulfilled' && Array.isArray(bookingsResult.value) ? bookingsResult.value : []);
+          setPartsOrders(ordersResult.status === 'fulfilled' && Array.isArray(ordersResult.value) ? ordersResult.value : []);
+          const failed = [bookingsResult, ordersResult].find((result) => result.status === 'rejected');
+          if (failed) setError(failed.reason?.message || 'Some dashboard data could not be loaded.');
+        }
       } catch (requestError) {
-        if (active) setError(requestError.message || 'Failed to load booking history.');
+        if (active) setError(requestError.message || 'Failed to load dashboard data.');
       } finally {
         if (active) setLoading(false);
       }
@@ -136,6 +145,50 @@ export default function Dashboard() {
                       </div>
                       <span className={`inline-flex self-start rounded-full border px-3 py-1 text-xs font-medium ${statusStyles[booking.status] || statusStyles.pending}`}>
                         {booking.status}
+                      </span>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+
+        <section className="mt-8 rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-slate-200 sm:p-8">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <h2 className="text-xl font-semibold text-slate-950">Parts Orders</h2>
+              <p className="mt-1 text-sm text-slate-500">Parts you ordered from the catalog.</p>
+            </div>
+            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
+              {partsOrders.length} total
+            </span>
+          </div>
+
+          <div className="mt-6">
+            {loading ? (
+              <p className="text-sm text-slate-500">Loading orders...</p>
+            ) : error ? (
+              <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
+            ) : partsOrders.length === 0 ? (
+              <p className="text-sm text-slate-500">No parts orders yet. Use the parts catalog to place an order.</p>
+            ) : (
+              <div className="grid gap-4">
+                {partsOrders.map((order) => (
+                  <article key={order._id} className="rounded-none border border-slate-200 bg-slate-50 p-5">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                      <div>
+                        <p className="text-xs uppercase tracking-[0.2em] text-blue-600">
+                          {new Date(order.createdAt).toLocaleDateString()}
+                        </p>
+                        <h3 className="mt-1 text-lg font-semibold text-slate-950">Rs. {order.total}</h3>
+                        <p className="mt-1 text-sm text-slate-500">Payment: {order.paymentStatus || 'Initiated'}</p>
+                        <p className="mt-1 text-sm text-slate-600">
+                          {order.items.map((item) => `${item.name} x ${item.quantity}`).join(', ')}
+                        </p>
+                      </div>
+                      <span className={`inline-flex self-start rounded-full border px-3 py-1 text-xs font-medium ${statusStyles[order.status] || statusStyles.pending}`}>
+                        {order.status}
                       </span>
                     </div>
                   </article>

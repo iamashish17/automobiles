@@ -16,7 +16,7 @@ module.exports = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.userId).select('_id role authProvider');
+    const user = await User.findById(decoded.userId).select('_id role authProvider email');
 
     if (!user) {
       return res.status(401).json({ error: 'User account no longer exists' });
@@ -25,6 +25,7 @@ module.exports = async (req, res, next) => {
     req.userId = user._id;
     req.role = user.role;
     req.authProvider = user.authProvider;
+    req.userEmail = user.email;
     return next();
   } catch {
     return authenticateWithClerk(req, res, next);
@@ -79,6 +80,7 @@ async function authenticateWithClerk(req, res, next) {
     req.userId = user._id;
     req.role = user.role;
     req.authProvider = user.authProvider;
+    req.userEmail = user.email;
     return next();
   } catch {
     return res.status(401).json({ error: 'Invalid or expired token' });
