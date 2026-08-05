@@ -10,8 +10,6 @@ import Register from "./pages/Register"
 import Dashboard from "./pages/Dashboard"
 import AdminDashboard from "./pages/AdminDashboard"
 import AdminRedirect from "./pages/AdminRedirect"
-import KhaltiReturn from "./pages/KhaltiReturn"
-import LegalPage from "./pages/LegalPage"
 import ProtectedRoute from "./component/auth/ProtectedRoute"
 import AdminRoute from "./component/auth/AdminRoute"
 
@@ -26,9 +24,6 @@ const App = () => {
         <Route path="/service-booking" element={<ServiceBookingPage />}/>
         <Route path="/contact" element={<Contact />}/>
         <Route path="/parts" element={<Parts />}/>
-        <Route path="/privacy" element={<LegalPage type="privacy" />}/>
-        <Route path="/terms" element={<LegalPage type="terms" />}/>
-        <Route path="/payment/khalti-return" element={<KhaltiReturn />}/>
         <Route path="/login" element={<Login />}/>
         <Route path="/register" element={<Register />}/>
         <Route path="/admin" element={<AdminRedirect />} />

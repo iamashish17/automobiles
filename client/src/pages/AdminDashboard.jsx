@@ -9,7 +9,6 @@ import {
   Package,
   Search,
   Settings,
-  ShoppingBag,
   Star,
   Users,
   Wrench,
@@ -26,7 +25,6 @@ const tabs = [
   { id: 'bookings', label: 'Bookings', icon: CalendarCheck },
   { id: 'services', label: 'Services', icon: Wrench },
   { id: 'parts', label: 'Parts', icon: Package },
-  { id: 'part-orders', label: 'Part Orders', icon: ShoppingBag },
   { id: 'users', label: 'Users', icon: Users },
   { id: 'reviews', label: 'Reviews', icon: Star },
   { id: 'messages', label: 'Messages', icon: Mail },
@@ -34,7 +32,6 @@ const tabs = [
 ];
 
 const bookingStatuses = ['pending', 'confirmed', 'rejected', 'completed', 'cancelled'];
-const partOrderStatuses = ['pending', 'confirmed', 'cancelled', 'completed'];
 const serviceCategories = ['Repair', 'Maintenance', 'Additional'];
 const PAGE_SIZE = 8;
 
@@ -261,13 +258,11 @@ export default function AdminDashboard() {
   const [query, setQuery] = useState('');
   const [userQuery, setUserQuery] = useState('');
   const [bookingFilter, setBookingFilter] = useState('all');
-  const [partOrderFilter, setPartOrderFilter] = useState('all');
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [pageByTab, setPageByTab] = useState({});
   const [bookings, setBookings] = useState([]);
   const [services, setServices] = useState([]);
   const [parts, setParts] = useState([]);
-  const [partOrders, setPartOrders] = useState([]);
   const [users, setUsers] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [messages, setMessages] = useState([]);
@@ -285,13 +280,8 @@ export default function AdminDashboard() {
       if (query.trim()) params.set('q', query.trim());
       if (bookingFilter !== 'all') params.set('status', bookingFilter);
 
-      const orderParams = new URLSearchParams();
-      if (query.trim()) orderParams.set('q', query.trim());
-      if (partOrderFilter !== 'all') orderParams.set('status', partOrderFilter);
-
-      const results = await Promise.allSettled([
+      const [bookingData, reviewData, messageData, serviceData, partData, userData] = await Promise.all([
         apiRequest(`/api/bookings${params.toString() ? `?${params}` : ''}`, { token }),
-        apiRequest(`/api/parts-orders${orderParams.toString() ? `?${orderParams}` : ''}`, { token }),
         apiRequest('/api/reviews/admin', { token }),
         apiRequest('/api/contact', { token }),
         apiRequest('/api/services?includeInactive=true', { token }),
@@ -299,28 +289,18 @@ export default function AdminDashboard() {
         apiRequest('/api/users', { token }),
       ]);
 
-      const [bookingData, orderData, reviewData, messageData, serviceData, partData, userData] = results.map((result) =>
-        result.status === 'fulfilled' ? result.value : []
-      );
-
       setBookings(Array.isArray(bookingData) ? bookingData : []);
-      setPartOrders(Array.isArray(orderData) ? orderData : []);
       setReviews(Array.isArray(reviewData) ? reviewData : []);
       setMessages(Array.isArray(messageData) ? messageData : []);
       setServices(Array.isArray(serviceData) ? serviceData : []);
       setParts(Array.isArray(partData) ? partData : []);
       setUsers(Array.isArray(userData) ? userData : []);
-
-      const failedCount = results.filter((result) => result.status === 'rejected').length;
-      if (failedCount > 0) {
-        setError(`${failedCount} admin data request${failedCount === 1 ? '' : 's'} failed. Loaded the remaining data.`);
-      }
     } catch (requestError) {
       setError(requestError.message || 'Failed to load admin data.');
     } finally {
       setLoading(false);
     }
-  }, [bookingFilter, partOrderFilter, query, token]);
+  }, [bookingFilter, query, token]);
 
   useEffect(() => {
     loadData();
@@ -335,13 +315,11 @@ export default function AdminDashboard() {
     unread: messages.filter((message) => message.status === 'unread').length,
     pendingReviews: reviews.filter((review) => getReviewStatus(review) === 'pending').length,
     revenue: services.reduce((sum, service) => sum + Number(service.price || 0), 0),
-    partSales: partOrders.reduce((sum, order) => sum + Number(order.total || 0), 0),
-  }), [bookings, messages, reviews, services, partOrders]);
+  }), [bookings, messages, reviews, services]);
 
   const stats = [
     { label: 'Total Users', value: users.length, helper: 'Registered customer and admin accounts', icon: Users, tone: 'gray' },
     { label: 'Total Bookings', value: bookings.length, helper: 'All service requests', icon: ClipboardList, tone: 'blue' },
-    { label: 'Part Orders', value: partOrders.length, helper: 'Customer parts purchases', icon: ShoppingBag, tone: 'green' },
     { label: 'Pending', value: counts.pending, helper: 'Waiting for admin action', icon: CalendarCheck, tone: 'amber' },
     { label: 'Approved', value: counts.confirmed, helper: 'Confirmed appointments', icon: CheckCircle, tone: 'green' },
     { label: 'Rejected', value: counts.rejected, helper: 'Rejected requests', icon: XCircle, tone: 'red' },
@@ -573,20 +551,6 @@ export default function AdminDashboard() {
                   page={getPage('parts')}
                   setPage={(page) => setPage('parts', page)}
                 />
-              ) : activeTab === 'part-orders' ? (
-                <PartOrdersPanel
-                  orders={partOrders}
-                  query={query}
-                  setQuery={setQuery}
-                  orderFilter={partOrderFilter}
-                  setOrderFilter={setPartOrderFilter}
-                  loadData={loadData}
-                  page={getPage('part-orders')}
-                  setPage={(page) => setPage('part-orders', page)}
-                  actionLoading={actionLoading}
-                  withAction={withAction}
-                  token={token}
-                />
               ) : activeTab === 'users' ? (
                 <UsersPanel
                   users={filteredUsers}
@@ -777,7 +741,7 @@ function ServicesPanel({ services, form, setForm, editingId, setEditingId, submi
             Active service
           </label>
           <div className="grid gap-2 sm:flex">
-            <Button type="submit" variant="primary" className="w-full sm:w-auto" disabled={isSaving}>{isSaving ? 'Saving...' : editingId ? 'Update Service' : 'Add Service'}</Button>
+            <Button variant="primary" className="w-full sm:w-auto" disabled={isSaving}>{isSaving ? 'Saving...' : editingId ? 'Update Service' : 'Add Service'}</Button>
             {editingId ? <Button type="button" className="w-full sm:w-auto" onClick={() => { setForm(emptyService); setEditingId(''); }}>Cancel</Button> : null}
           </div>
         </form>
@@ -860,7 +824,7 @@ function PartsPanel({ parts, form, setForm, editingId, setEditingId, submitPart,
             Featured part
           </label>
           <div className="grid gap-2 sm:flex">
-            <Button type="submit" variant="primary" className="w-full sm:w-auto" disabled={isSaving}>{isSaving ? 'Saving...' : editingId ? 'Update Part' : 'Add Part'}</Button>
+            <Button variant="primary" className="w-full sm:w-auto" disabled={isSaving}>{isSaving ? 'Saving...' : editingId ? 'Update Part' : 'Add Part'}</Button>
             {editingId ? <Button type="button" className="w-full sm:w-auto" onClick={() => { setForm(emptyPart); setEditingId(''); }}>Cancel</Button> : null}
           </div>
         </form>
@@ -944,82 +908,6 @@ function PartsPanel({ parts, form, setForm, editingId, setEditingId, submitPart,
         )}
       </Section>
     </div>
-  );
-}
-
-function PartOrdersPanel({ orders, query, setQuery, orderFilter, setOrderFilter, loadData, page, setPage, actionLoading, withAction, token }) {
-  const paginated = paginate(orders, page);
-
-  return (
-    <Section
-      title="Part Orders"
-      description="Review customer parts purchases and update fulfillment status."
-      action={<Button variant="dark" onClick={loadData}>Apply Filters</Button>}
-    >
-      <div className="mb-5 grid gap-3 lg:grid-cols-[1fr_220px]">
-        <TextInput label="Search orders" leftIcon={Search} value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Customer, phone, address, part" />
-        <SelectInput label="Status" value={orderFilter} onChange={(event) => setOrderFilter(event.target.value)}>
-          <option value="all">All statuses</option>
-          {partOrderStatuses.map((status) => <option key={status} value={status}>{status}</option>)}
-        </SelectInput>
-      </div>
-
-      {orders.length === 0 ? (
-        <EmptyState title="No part orders found" description="New customer part orders will appear here." />
-      ) : (
-        <>
-          <div className="grid gap-3 md:hidden">
-            {paginated.items.map((order) => (
-              <article key={order._id} className="rounded-lg border border-gray-200 bg-white p-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-sm font-semibold text-gray-900">{order.customerName}</p>
-                    <p className="mt-1 text-xs text-gray-500">{order.phone}</p>
-                  </div>
-                  <Badge tone={order.status}>{order.status}</Badge>
-                </div>
-                <p className="mt-3 text-sm text-gray-600">{order.items.map((item) => `${item.name} x ${item.quantity}`).join(', ')}</p>
-                <p className="mt-3 text-sm font-semibold text-gray-900">Rs. {order.total}</p>
-                <SelectInput label="Update status" value={order.status} onChange={(event) => withAction(`part-order-${order._id}`, () => apiRequest(`/api/parts-orders/${order._id}/status`, { method: 'PATCH', token, body: { status: event.target.value } }), 'Failed to update part order.')}>
-                  {partOrderStatuses.map((status) => <option key={status} value={status}>{status}</option>)}
-                </SelectInput>
-              </article>
-            ))}
-          </div>
-
-          <div className="hidden md:block">
-            <TableShell columns={['Customer', 'Items', 'Total', 'Fee', 'Refunded', 'Payment', 'Status', 'Actions']}>
-              {paginated.items.map((order, index) => (
-                <tr key={order._id} className={cx('hover:bg-gray-50', index % 2 ? 'bg-gray-50/40' : 'bg-white')}>
-                  <td className="px-4 py-4">
-                    <p className="font-medium text-gray-900">{order.customerName}</p>
-                    <p className="mt-1 text-sm text-gray-500">{order.userId?.email || order.phone}</p>
-                    <p className="mt-1 line-clamp-2 text-xs text-gray-400">{order.address}</p>
-                  </td>
-                  <td className="px-4 py-4 text-gray-600">{order.items.map((item) => `${item.name} x ${item.quantity}`).join(', ')}</td>
-                  <td className="whitespace-nowrap px-4 py-4 font-medium text-gray-900">Rs. {order.total}</td>
-                  <td className="whitespace-nowrap px-4 py-4 text-gray-600">Rs. {Number(order.khaltiFee || 0) / 100}</td>
-                  <td className="px-4 py-4"><Badge tone={order.khaltiRefunded ? 'cancelled' : 'completed'}>{order.khaltiRefunded ? 'true' : 'false'}</Badge></td>
-                  <td className="px-4 py-4"><Badge tone={order.paymentStatus === 'Completed' ? 'completed' : order.paymentStatus === 'Initiated' || order.paymentStatus === 'Pending' ? 'pending' : 'cancelled'}>{order.paymentStatus || 'Initiated'}</Badge></td>
-                  <td className="px-4 py-4"><Badge tone={order.status}>{order.status}</Badge></td>
-                  <td className="px-4 py-4">
-                    <select
-                      value={order.status}
-                      disabled={actionLoading === `part-order-${order._id}`}
-                      onChange={(event) => withAction(`part-order-${order._id}`, () => apiRequest(`/api/parts-orders/${order._id}/status`, { method: 'PATCH', token, body: { status: event.target.value } }), 'Failed to update part order.')}
-                      className="rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 outline-none focus:border-blue-500"
-                    >
-                      {partOrderStatuses.map((status) => <option key={status} value={status}>{status}</option>)}
-                    </select>
-                  </td>
-                </tr>
-              ))}
-            </TableShell>
-          </div>
-          <Pagination page={paginated.currentPage} totalPages={paginated.totalPages} totalItems={orders.length} onPageChange={setPage} />
-        </>
-      )}
-    </Section>
   );
 }
 

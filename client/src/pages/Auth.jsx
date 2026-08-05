@@ -23,7 +23,7 @@ export default function AuthPage({ mode }) {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate(String(user?.role || '').toLowerCase() === 'admin' ? '/admin-dashboard' : '/dashboard', { replace: true });
+      navigate(String(user?.role || '').toLowerCase() === 'admin' ? '/admin-dashboard' : '/', { replace: true });
     }
   }, [isAuthenticated, navigate, user?.role]);
 
@@ -65,7 +65,7 @@ export default function AuthPage({ mode }) {
       });
 
       setSession(data);
-      navigate(String(data.user?.role || '').toLowerCase() === 'admin' ? '/admin-dashboard' : '/dashboard', { replace: true });
+      navigate(String(data.user?.role || '').toLowerCase() === 'admin' ? '/admin-dashboard' : '/', { replace: true });
     } catch (requestError) {
       setError(requestError.message || 'Authentication failed.');
     } finally {

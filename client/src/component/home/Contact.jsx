@@ -39,7 +39,7 @@ const Contact = () => (
             <path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 013.09 5.18 2 2 0 015.07 3h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L9.09 10.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
           }
         >
-          <a href="tel:+9779876523104" className="text-xs text-gray-600 hover:text-blue-400 transition-colors">
+          <a href="tel:5551234567" className="text-xs text-gray-600 hover:text-blue-400 transition-colors">
             +977 9876523104
           </a>
         </ContactItem>

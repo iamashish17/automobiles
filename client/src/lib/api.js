@@ -15,8 +15,7 @@ export async function apiRequest(path, options = {}) {
       body: body === undefined ? undefined : JSON.stringify(body),
     });
   } catch {
-    const target = API_BASE || 'the backend server';
-    throw new Error(`Unable to connect to ${target}. Please try again shortly.`);
+    throw new Error('Unable to connect to the backend server. Start the server on port 3000 and try again.');
   }
 
   let data = null;
