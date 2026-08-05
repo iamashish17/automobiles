@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import HighEngine from "../../assets/parts/HighEngine.jpg"
 import BrakePremium from "../../assets/parts/BrakePremium.jpg"
 import SuspensionKit from "../../assets/parts/SuspensionKit.jpg"
-import Headlight from "../../assets/parts/Headlight.jpg"
+import Headlight from "../../assets/parts/HeadLight.jpg"
 import { apiRequest } from '../../lib/api'
 
 const fallbackFeaturedParts = [
