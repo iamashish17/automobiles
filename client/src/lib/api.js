@@ -1,4 +1,5 @@
 const API_BASE = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/$/, '') : '';
+const API_TARGET = API_BASE || 'the configured backend';
 
 export async function apiRequest(path, options = {}) {
   const { token, body, headers, ...rest } = options;
@@ -15,7 +16,7 @@ export async function apiRequest(path, options = {}) {
       body: body === undefined ? undefined : JSON.stringify(body),
     });
   } catch {
-    throw new Error('Unable to connect to the backend server. Start the server on port 3000 and try again.');
+    throw new Error(`Unable to connect to the backend server at ${API_TARGET}. Start the server and try again.`);
   }
 
   let data = null;
