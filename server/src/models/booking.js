@@ -4,8 +4,8 @@ const bookingSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   serviceName: { type: String, required: true, trim: true },
   vehicleModel: { type: String, required: true, trim: true },
-  date: { type: String, required: true }, // e.g. '2026-07-24'
-  time: { type: String, required: true }, // e.g. '10:00 AM'
+  date: { type: String, required: true }, 
+  time: { type: String, required: true }, 
   status: {
     type: String,
     enum: ['pending', 'confirmed', 'rejected', 'completed', 'cancelled'],

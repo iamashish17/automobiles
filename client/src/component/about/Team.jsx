@@ -23,7 +23,7 @@ const teamMembers = [
 
 const Team = () => {
   return (
-    <section className="max-w-5xl mx-auto mt-10 px-4 sm:px-6">
+    <section className="max-w-6xl mx-auto mt-10 px-4 sm:px-6 lg:px-8">
 
       <h2 className="text-xl font-semibold text-gray-900 mb-2">
         Meet Our Team

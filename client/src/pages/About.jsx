@@ -3,7 +3,7 @@ import Navbar from '../component/layout/Navbar'
 import HeroSection from '../component/about/HeroSection'
 import Mission from '../component/about/Mission'
 import Team from '../component/about/Team'
-import Aboutfooter from '../component/about/Aboutfooter'
+import Footer from '../component/layout/Footer'
 
 const About = () => {
   return (
@@ -12,7 +12,7 @@ const About = () => {
       <HeroSection />
       <Mission />
       <Team />
-      <Aboutfooter />
+      <Footer />
     </div>
   )
 }

@@ -3,7 +3,7 @@ import History from "/src/assets/about/history.png"
 
 const HeroSection = () => {
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
       <h1 className="text-2xl font-bold text-gray-900 pt-6 pb-7 sm:text-3xl">
         About New Purnagiri Automobiles

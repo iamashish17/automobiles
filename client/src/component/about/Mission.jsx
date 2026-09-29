@@ -3,7 +3,7 @@ import MissionImage from "/src/assets/about/mission.png";
 
 const Mission = () => {
   return (
-    <section className="max-w-5xl mx-auto mt-8 px-4 sm:px-6">
+    <section className="max-w-6xl mx-auto mt-8 px-4 sm:px-6 lg:px-8">
       
       <div className="mb-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-2">

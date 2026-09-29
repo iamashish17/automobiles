@@ -48,7 +48,7 @@ const FeaturedParts = () => {
   }, [])
 
   return (
-    <div className="max-w-5xl mx-auto px-4 pb-2 sm:px-6">
+    <div className="max-w-6xl mx-auto px-4 pb-2 sm:px-6 lg:px-8">
       <h2 className="text-base font-bold text-gray-900 mb-4">Featured Parts</h2>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">

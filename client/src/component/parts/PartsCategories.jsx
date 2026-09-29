@@ -17,7 +17,7 @@ const categories = [
 
 const PartsCategories = () => {
   return (
-    <div className="max-w-5xl mx-auto px-4 pb-10 sm:px-6">
+    <div className="max-w-6xl mx-auto px-4 pb-10 sm:px-6 lg:px-8">
       <h2 className="text-base font-bold text-gray-900 mb-4">Categories</h2>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">

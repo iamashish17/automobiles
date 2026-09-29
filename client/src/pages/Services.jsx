@@ -4,7 +4,7 @@ import OurServices from '../component/services/OurServices'
 import RepairServices from '../component/services/RepairServices'
 import MaintenanceServices from '../component/services/MaintenanceServices'
 import AdditionalServices from '../component/services/AdditionalServices'
-import ServicesFooter from '../component/services/ServicesFooter'
+import Footer from '../component/layout/Footer'
 
 const Services = () => {
   return (
@@ -14,7 +14,7 @@ const Services = () => {
       <RepairServices />
       <MaintenanceServices />
       <AdditionalServices />
-      <ServicesFooter />
+      <Footer />
     </div>
   )
 }

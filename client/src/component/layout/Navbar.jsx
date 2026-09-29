@@ -3,6 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { Show, UserButton } from "@clerk/react";
 import { useAuth } from "../../context/useAuth";
+import newpurnagiri from "../../assets/logos/newpurnagiri.png"
 
 const navItems = [
   { to: "/", label: "Home" },
@@ -32,7 +33,11 @@ const Navbar = () => {
     <header className="bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-3 sm:px-6 lg:gap-6">
         <Link to="/" onClick={closeMenu} className="min-w-0 text-sm font-semibold text-gray-900 sm:text-base">
-          New Purnagiri Automobiles
+          <img
+      src={newpurnagiri}
+      alt="New Purnagiri"
+      className="h-14 w-auto"
+    />
         </Link>
 
         <nav className="hidden lg:flex items-center gap-7 text-sm">

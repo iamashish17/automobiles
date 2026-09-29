@@ -31,7 +31,7 @@ const PartsCatalog = () => {
   }, [query])
 
   return (
-    <div className="max-w-5xl mx-auto px-4 pt-8 pb-6 sm:px-6 sm:pt-10">
+    <div className="max-w-6xl mx-auto px-4 pt-8 pb-6 sm:px-6 sm:pt-10 lg:px-8">
       <h1 className="text-2xl font-bold text-gray-900">Parts Catalog</h1>
       <p className="text-sm text-slate-500 mt-1">Find the right parts for your vehicle</p>
 

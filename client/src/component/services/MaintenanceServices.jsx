@@ -29,7 +29,7 @@ const services = [
 
 const MaintenanceServices = () => {
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="mt-5">
         <h2 className="text-lg font-bold text-gray-900 mb-6">
           Maintenance Services

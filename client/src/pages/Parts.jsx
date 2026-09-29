@@ -3,7 +3,7 @@ import Navbar from '../component/layout/Navbar'
 import PartsCatalog from '../component/parts/PartsCatalog'
 import PartsCategories from '../component/parts/PartsCategories'
 import FeaturesParts from '../component/parts/FeaturesParts'
-import Aboutfooter from '../component/about/Aboutfooter'
+import Footer from '../component/layout/Footer'
 
 const Parts = () => {
   return (
@@ -12,7 +12,7 @@ const Parts = () => {
         <PartsCatalog />
         <PartsCategories />
         <FeaturesParts />
-        <Aboutfooter />
+        <Footer />
     </div>
   )
 }
